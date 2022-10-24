@@ -33,3 +33,45 @@ function displayBook() {
     bookHolder.appendChild(singleBook);
   });
 }
+
+// Event listener for the book adder form
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const book = {};
+  book.title = title.value;
+  book.author = author.value;
+  books.push(book);
+  title.value = '';
+  author.value = '';
+  removeChild();
+  displayBook();
+  Stringifier();
+});
+
+// Function to remove childnodes from the book container
+
+function removeChild() {
+  const bookHolder = document.querySelector('.book-holder');
+  while (bookHolder.hasChildNodes()) {
+    bookHolder.removeChild(bookHolder.firstChild);
+  }
+}
+
+function bookRemover(event) {
+  const filteredBooks = books.filter(function (book) {
+    return book.title !== event.path[1].className;
+  });
+  books = filteredBooks;
+  removeChild();
+  displayBook();
+  Stringifier();
+}
+
+// Stringifier function
+
+function Stringifier() {
+  const updatedBooks = JSON.stringify(books);
+  sessionStorage.setItem('book', updatedBooks);
+}
+
