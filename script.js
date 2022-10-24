@@ -1,17 +1,27 @@
+/* eslint-disable no-use-before-define */
+
 let books = [];
 
-// Update books object from session storage
+// Update books object from local storage
 
-let oldBooks = sessionStorage.getItem('book');
+let oldBooks = localStorage.getItem('book');
 if (oldBooks !== null) {
   oldBooks = JSON.parse(oldBooks);
   books = oldBooks;
-  console.log(books);
 }
 
 const title = document.querySelector('#title');
 const author = document.querySelector('#author');
 const form = document.querySelector('#form');
+
+// Function to remove childnodes from the book container
+
+function removeChild() {
+  const bookHolder = document.querySelector('.book-holder');
+  while (bookHolder.hasChildNodes()) {
+    bookHolder.removeChild(bookHolder.firstChild);
+  }
+}
 
 // Function to dynamically render the books
 
@@ -31,7 +41,27 @@ function displayBook() {
     removeBtn.innerText = 'Remove';
     singleBook.append(title, author, removeBtn, line);
     bookHolder.appendChild(singleBook);
+    return '';
   });
+}
+
+displayBook();
+
+// Stringifier function
+
+function Stringifier() {
+  const updatedBooks = JSON.stringify(books);
+  localStorage.setItem('book', updatedBooks);
+}
+
+// Function to remove book
+
+function bookRemover(event) {
+  const filteredBooks = books.filter((book) => book.title !== event.path[1].className);
+  books = filteredBooks;
+  removeChild();
+  displayBook();
+  Stringifier();
 }
 
 // Event listener for the book adder form
@@ -48,30 +78,3 @@ form.addEventListener('submit', (event) => {
   displayBook();
   Stringifier();
 });
-
-// Function to remove childnodes from the book container
-
-function removeChild() {
-  const bookHolder = document.querySelector('.book-holder');
-  while (bookHolder.hasChildNodes()) {
-    bookHolder.removeChild(bookHolder.firstChild);
-  }
-}
-
-function bookRemover(event) {
-  const filteredBooks = books.filter(function (book) {
-    return book.title !== event.path[1].className;
-  });
-  books = filteredBooks;
-  removeChild();
-  displayBook();
-  Stringifier();
-}
-
-// Stringifier function
-
-function Stringifier() {
-  const updatedBooks = JSON.stringify(books);
-  sessionStorage.setItem('book', updatedBooks);
-}
-
