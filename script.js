@@ -27,7 +27,7 @@ function removeChild() {
 
 function displayBook() {
   const bookHolder = document.querySelector('.book-holder');
-  books.map((book) => {
+  books.map((book, index) => {
     const singleBook = document.createElement('div');
     singleBook.className = book.title;
     const title = document.createElement('p');
@@ -36,7 +36,7 @@ function displayBook() {
     author.innerHTML = book.author;
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-btn';
-    removeBtn.addEventListener('click', bookRemover);
+    removeBtn.addEventListener('click', () => { bookRemover(index); });
     const line = document.createElement('hr');
     removeBtn.innerText = 'Remove';
     singleBook.append(title, author, removeBtn, line);
@@ -56,9 +56,8 @@ function Stringifier() {
 
 // Function to remove book
 
-function bookRemover(event) {
-  const filteredBooks = books.filter((book) => book.title !== event.path[1].className);
-  books = filteredBooks;
+function bookRemover(index) {
+  books.splice(index, 1);
   removeChild();
   displayBook();
   Stringifier();
