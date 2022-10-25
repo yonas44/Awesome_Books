@@ -1,3 +1,11 @@
 h1 {
   font-size: 16px;
 }
+
+.table-holder {
+  width: 50vw;
+}
+
+.book-holder tr button {
+  float: right;
+}
