@@ -1,29 +1,36 @@
 /* eslint-disable no-use-before-define */
 
-let books = [];
+class Store {
+  books = [];
+
+  addBook(book) {
+    this.books.push(book);
+    displayBook();
+    Stringifier();
+  }
+
+  bookRemover(index) {
+    this.books.splice(index, 1);
+    displayBook();
+    Stringifier();
+  }
+}
+
+const store = new Store();
 
 // Update books object from local storage
 
 let oldBooks = localStorage.getItem('book');
 if (oldBooks !== null) {
   oldBooks = JSON.parse(oldBooks);
-  books = oldBooks;
+  store.books = oldBooks;
 }
+
+// Function to dynamically render the books
 
 const title = document.querySelector('#title');
 const author = document.querySelector('#author');
 const form = document.querySelector('#form');
-
-// Function to remove childnodes from the book container
-
-function removeChild() {
-  const bookHolder = document.querySelector('.book-holder');
-  while (bookHolder.hasChildNodes()) {
-    bookHolder.removeChild(bookHolder.firstChild);
-  }
-}
-
-// Function to dynamically render the books
 
 function displayBook() {
   const bookHolder = document.querySelector('.book-holder');
@@ -36,7 +43,9 @@ function displayBook() {
     author.innerHTML = book.author;
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-btn';
-    removeBtn.addEventListener('click', () => { bookRemover(index); });
+    removeBtn.addEventListener('click', () => {
+      bookRemover(index);
+    });
     const line = document.createElement('hr');
     removeBtn.innerText = 'Remove';
     singleBook.append(title, author, removeBtn, line);
@@ -50,17 +59,8 @@ displayBook();
 // Stringifier function
 
 function Stringifier() {
-  const updatedBooks = JSON.stringify(books);
+  const updatedBooks = JSON.stringify(store.books);
   localStorage.setItem('book', updatedBooks);
-}
-
-// Function to remove book
-
-function bookRemover(index) {
-  books.splice(index, 1);
-  removeChild();
-  displayBook();
-  Stringifier();
 }
 
 // Event listener for the book adder form
