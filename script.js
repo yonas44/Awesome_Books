@@ -1,7 +1,11 @@
 /* eslint-disable no-use-before-define */
 
 class Store {
-  books = [];
+  constructor(title, author) {
+    this.title = title;
+    this.author = author;
+    Store.books.push(this);
+  }
 
   addBook(book) {
     this.books.push(book);
@@ -14,12 +18,8 @@ class Store {
     displayBook();
     Stringifier();
   }
-}
-class Book {
-  constructor(title, author) {
-    this.title = title;
-    this.author = author;
-  }
+
+  static books = [];
 }
 
 const store = new Store();
@@ -72,7 +72,7 @@ function Stringifier() {
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-  const book = new Book(title.value, author.value);
+  const book = new Store(title.value, author.value);
   store.addBook(book);
   title.value = '';
   author.value = '';
