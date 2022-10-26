@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 
 class Store {
   constructor(title, author) {
@@ -7,29 +8,19 @@ class Store {
     Store.books.push(this);
   }
 
-  addBook(book) {
-    this.books.push(book);
-    displayBook();
-    Stringifier();
-  }
-
-  bookRemover(index) {
-    this.books.splice(index, 1);
-    displayBook();
-    Stringifier();
+  static bookRemover(index) {
+    Store.books.splice(index, 1);
   }
 
   static books = [];
 }
-
-const store = new Store();
 
 // Update books object from local storage
 
 let oldBooks = localStorage.getItem('book');
 if (oldBooks !== null) {
   oldBooks = JSON.parse(oldBooks);
-  store.books = oldBooks;
+  Store.books = oldBooks;
 }
 
 // Function to dynamically render the books
@@ -43,14 +34,16 @@ function displayBook() {
   while (bookHolder.hasChildNodes()) {
     bookHolder.removeChild(bookHolder.firstChild);
   }
-  store.books.map((book, index) => {
+  Store.books.map((book, index) => {
     const singleBook = document.createElement('tr');
     const title = document.createElement('td');
     title.innerText = `"${book.title}" by ${book.author}`;
     const button = document.createElement('td');
     const removeBtn = document.createElement('button');
     removeBtn.addEventListener('click', () => {
-      store.bookRemover(index);
+      Store.bookRemover(index);
+      displayBook();
+      Stringifier();
     });
     removeBtn.innerText = 'Remove';
     button.appendChild(removeBtn);
@@ -64,7 +57,7 @@ displayBook();
 // Stringifier function
 
 function Stringifier() {
-  const updatedBooks = JSON.stringify(store.books);
+  const updatedBooks = JSON.stringify(Store.books);
   localStorage.setItem('book', updatedBooks);
 }
 
@@ -73,7 +66,8 @@ function Stringifier() {
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   const book = new Store(title.value, author.value);
-  store.addBook(book);
+  displayBook();
+  Stringifier();
   title.value = '';
   author.value = '';
 });
