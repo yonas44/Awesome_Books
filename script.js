@@ -1,79 +1,73 @@
 /* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 
-let books = [];
+class Store {
+  constructor(title, author) {
+    this.title = title;
+    this.author = author;
+    Store.books.push(this);
+  }
+
+  static bookRemover(index) {
+    Store.books.splice(index, 1);
+  }
+
+  static books = [];
+}
 
 // Update books object from local storage
 
 let oldBooks = localStorage.getItem('book');
 if (oldBooks !== null) {
   oldBooks = JSON.parse(oldBooks);
-  books = oldBooks;
+  Store.books = oldBooks;
 }
+
+// Function to dynamically render the books
 
 const title = document.querySelector('#title');
 const author = document.querySelector('#author');
 const form = document.querySelector('#form');
 
-// Function to remove childnodes from the book container
-
-function removeChild() {
+function displayBook() {
   const bookHolder = document.querySelector('.book-holder');
   while (bookHolder.hasChildNodes()) {
     bookHolder.removeChild(bookHolder.firstChild);
   }
-}
-
-// Function to dynamically render the books
-
-function displayBook() {
-  const bookHolder = document.querySelector('.book-holder');
-  books.map((book, index) => {
-    const singleBook = document.createElement('div');
-    singleBook.className = book.title;
-    const title = document.createElement('p');
-    title.innerHTML = book.title;
-    const author = document.createElement('p');
-    author.innerHTML = book.author;
+  Store.books.map((book, index) => {
+    const singleBook = document.createElement('tr');
+    const title = document.createElement('td');
+    title.innerText = `"${book.title}" by ${book.author}`;
+    const button = document.createElement('td');
     const removeBtn = document.createElement('button');
-    removeBtn.className = 'remove-btn';
-    removeBtn.addEventListener('click', () => { bookRemover(index); });
-    const line = document.createElement('hr');
+    removeBtn.addEventListener('click', () => {
+      Store.bookRemover(index);
+      displayBook();
+      Stringifier();
+    });
     removeBtn.innerText = 'Remove';
-    singleBook.append(title, author, removeBtn, line);
+    button.appendChild(removeBtn);
+    singleBook.append(title, button);
     bookHolder.appendChild(singleBook);
-    return '';
+    return bookHolder;
   });
 }
-
 displayBook();
 
 // Stringifier function
 
 function Stringifier() {
-  const updatedBooks = JSON.stringify(books);
+  const updatedBooks = JSON.stringify(Store.books);
   localStorage.setItem('book', updatedBooks);
-}
-
-// Function to remove book
-
-function bookRemover(index) {
-  books.splice(index, 1);
-  removeChild();
-  displayBook();
-  Stringifier();
 }
 
 // Event listener for the book adder form
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-  const book = {};
-  book.title = title.value;
-  book.author = author.value;
-  books.push(book);
-  title.value = '';
-  author.value = '';
-  removeChild();
+  const book = new Store(title.value, author.value);
   displayBook();
   Stringifier();
+  title.value = '';
+  author.value = '';
 });
