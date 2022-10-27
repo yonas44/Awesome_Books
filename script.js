@@ -79,3 +79,18 @@ form.addEventListener('submit', (event) => {
   title.value = '';
   author.value = '';
 });
+
+// Add navigation
+const time = document.querySelector('#time');
+time.innerText = new Date();
+const links = document.querySelectorAll('.links');
+const sections = document.querySelectorAll('.section');
+links.forEach((link) => {
+  link.addEventListener('click', (event) => {
+    const val = event.target.id;
+    sections.forEach((section) => {
+      if (section.classList.contains(val)) section.classList.add('on');
+      else section.classList.remove('on');
+    });
+  });
+});
