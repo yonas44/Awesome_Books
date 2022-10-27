@@ -37,8 +37,7 @@ function displayBook() {
   if (Store.books.length === 0) {
     const message = document.createElement('tr');
     message.className = 'fs-2 text-center fw-semibold';
-    message.innerText =
-      'Your collection seems to be empty, please add books using the add-new link.';
+    message.innerText = 'Your collection seems to be empty, please add books using the add-new link.';
     bookHolder.appendChild(message);
   } else {
     Store.books.map((book, index) => {
